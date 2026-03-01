@@ -1,0 +1,51 @@
+// T035: Checkbox component with large click area
+
+import React from 'react';
+
+interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+  label?: string;
+}
+
+export function Checkbox({ label, className = '', id, ...props }: CheckboxProps) {
+  const checkboxId = id || label?.toLowerCase().replace(/\s+/g, '-') || `checkbox-${Math.random()}`;
+
+  return (
+    <div className="flex items-center">
+      <input
+        id={checkboxId}
+        type="checkbox"
+        className={
+          `peer h-5 w-5 rounded-md border-2 border-gray-300 bg-white text-primary-500
+          focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-background-dark
+          hover:border-primary-500 transition-colors
+          checked:bg-primary-500 checked:border-primary-500
+          cursor-pointer
+          disabled:opacity-50 disabled:cursor-not-allowed
+          ${className}`
+        }
+        {...props}
+      />
+      {label && (
+        <label
+          htmlFor={checkboxId}
+          className="ml-3 flex items-center text-sm font-medium text-gray-700 cursor-pointer select-none"
+        >
+          {label}
+          <svg
+            className="ml-1 h-4 w-4 text-primary-400 opacity-0 peer-checked:opacity-100 transition-opacity"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={3}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        </label>
+      )}
+    </div>
+  );
+}
