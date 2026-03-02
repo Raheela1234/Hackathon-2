@@ -15,9 +15,9 @@
     "@better-fetch/fetch": "^1.1.21",
     "axios": "^1.13.2",
     "better-auth": "^1.4.10",
-    "next": "16.1.1",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "next": "^15.5.12",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
