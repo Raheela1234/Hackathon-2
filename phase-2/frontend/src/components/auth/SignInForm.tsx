@@ -1,5 +1,4 @@
 // T025: SignInForm component with validation
-
 'use client';
 
 import React, { useState } from 'react';
@@ -36,7 +35,7 @@ export function SignInForm({ onSuccess, initialEmail = '' }: SignInFormProps) {
   };
 
   const validateField = (field: 'email' | 'password', value: string) => {
-    const errors = { ...formState.errors };
+    const errors: Partial<SignInFormState['errors']> = { ...formState.errors };
 
     if (field === 'email') {
       if (!value) {
@@ -69,7 +68,7 @@ export function SignInForm({ onSuccess, initialEmail = '' }: SignInFormProps) {
     }));
 
     // Validate all fields
-    const errors: typeof formState.errors = {};
+    const errors: Partial<SignInFormState['errors']> = {};
     if (!formState.email) {
       errors.email = 'Email is required';
     } else if (!validateEmail(formState.email)) {
@@ -89,11 +88,13 @@ export function SignInForm({ onSuccess, initialEmail = '' }: SignInFormProps) {
       setFormState((prev) => ({ ...prev, isSubmitting: true, errors: {} }));
       await signIn(formState.email, formState.password);
       onSuccess?.();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      // Safely handle unknown error type
+      const message = error instanceof Error ? error.message : 'Invalid credentials';
       setFormState((prev) => ({
         ...prev,
         isSubmitting: false,
-        errors: { general: error.message || 'Invalid credentials' },
+        errors: { general: message },
       }));
     }
   };
@@ -120,9 +121,7 @@ export function SignInForm({ onSuccess, initialEmail = '' }: SignInFormProps) {
         type="email"
         label="Email"
         value={formState.email}
-        onChange={(e) =>
-          setFormState((prev) => ({ ...prev, email: e.target.value }))
-        }
+        onChange={(e) => setFormState((prev) => ({ ...prev, email: e.target.value }))}
         onBlur={() => handleBlur('email')}
         error={formState.errors.email}
         touched={formState.touched.email}
@@ -134,9 +133,7 @@ export function SignInForm({ onSuccess, initialEmail = '' }: SignInFormProps) {
         type="password"
         label="Password"
         value={formState.password}
-        onChange={(e) =>
-          setFormState((prev) => ({ ...prev, password: e.target.value }))
-        }
+        onChange={(e) => setFormState((prev) => ({ ...prev, password: e.target.value }))}
         onBlur={() => handleBlur('password')}
         error={formState.errors.password}
         touched={formState.touched.password}

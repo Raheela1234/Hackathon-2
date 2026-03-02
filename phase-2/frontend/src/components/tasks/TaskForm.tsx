@@ -1,5 +1,4 @@
 // T051: TaskForm component with validation and submit/cancel actions
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -48,7 +47,7 @@ export function TaskForm({
   };
 
   const validateField = (field: 'title' | 'description', value: string) => {
-    const errors = { ...formState.errors };
+    const errors: Partial<TaskFormState['errors']> = { ...formState.errors };
 
     if (field === 'title') {
       if (!value.trim()) {
@@ -66,14 +65,12 @@ export function TaskForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Mark all fields as touched
     setFormState((prev) => ({
       ...prev,
       touched: { title: true, description: true },
     }));
 
-    // Validate all fields
-    const errors: typeof formState.errors = {};
+    const errors: Partial<TaskFormState['errors']> = {};
 
     if (!formState.title.trim()) {
       errors.title = 'Title is required';
@@ -91,11 +88,9 @@ export function TaskForm({
         title: formState.title.trim(),
         description: formState.description.trim() || undefined,
       });
-    } catch (error: any) {
-      setFormState((prev) => ({
-        ...prev,
-        errors: { general: error.message || 'Failed to save task' },
-      }));
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to save task';
+      setFormState((prev) => ({ ...prev, errors: { general: message } }));
     }
   };
 
@@ -111,9 +106,7 @@ export function TaskForm({
         type="text"
         label="Title"
         value={formState.title}
-        onChange={(e) =>
-          setFormState((prev) => ({ ...prev, title: e.target.value }))
-        }
+        onChange={(e) => setFormState((prev) => ({ ...prev, title: e.target.value }))}
         onBlur={() => handleBlur('title')}
         error={formState.errors.title}
         touched={formState.touched.title}
@@ -125,9 +118,7 @@ export function TaskForm({
       <TextArea
         label="Description (optional)"
         value={formState.description}
-        onChange={(e) =>
-          setFormState((prev) => ({ ...prev, description: e.target.value }))
-        }
+        onChange={(e) => setFormState((prev) => ({ ...prev, description: e.target.value }))}
         onBlur={() => handleBlur('description')}
         error={formState.errors.description}
         touched={formState.touched.description}
@@ -147,13 +138,7 @@ export function TaskForm({
         >
           {mode === 'create' ? 'Create Task' : 'Save Changes'}
         </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="md"
-          onClick={onCancel}
-          disabled={formState.isSubmitting}
-        >
+        <Button type="button" variant="ghost" size="md" onClick={onCancel} disabled={formState.isSubmitting}>
           Cancel
         </Button>
       </div>

@@ -1,5 +1,3 @@
-// T020: AuthContext with AuthContextProvider - Updated for BetterAuth
-
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
@@ -9,7 +7,6 @@ import { useBetterAuth } from '@/hooks/useBetterAuth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper function to decode JWT token
 function parseJwt(token: string) {
   try {
     const base64Url = token.split('.')[1];
@@ -20,9 +17,8 @@ function parseJwt(token: string) {
         .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
         .join('')
     );
-
     return JSON.parse(jsonPayload);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error parsing JWT token:', error);
     return null;
   }
@@ -38,23 +34,13 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   });
   const router = useRouter();
 
-  // Check for existing token on initial load and decode user info
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (token) {
       const decoded = parseJwt(token);
       if (decoded) {
-        const user: User = {
-          id: decoded.sub,
-          email: decoded.email,
-          token: token
-        };
-        setAuthState({
-          user,
-          loading: false,
-          error: null,
-          isAuthenticated: true
-        });
+        const user: User = { id: decoded.sub, email: decoded.email, token };
+        setAuthState({ user, loading: false, error: null, isAuthenticated: true });
       }
     }
   }, []);
@@ -64,31 +50,22 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
       setAuthState(prev => ({ ...prev, loading: true, error: null }));
       await authHook.signIn(email, password);
 
-      // After successful sign in, get the token and decode user info
       const token = localStorage.getItem('access_token');
       if (token) {
         const decoded = parseJwt(token);
         if (decoded) {
-          const user: User = {
-            id: decoded.sub,
-            email: decoded.email,
-            token: token
-          };
-          setAuthState({
-            user,
-            loading: false,
-            error: null,
-            isAuthenticated: true
-          });
+          const user: User = { id: decoded.sub, email: decoded.email, token };
+          setAuthState({ user, loading: false, error: null, isAuthenticated: true });
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Sign in failed';
       setAuthState(prev => ({
         ...prev,
         loading: false,
-        error: error.message || 'Sign in failed',
+        error: message,
         isAuthenticated: false,
-        user: null
+        user: null,
       }));
       throw error;
     }
@@ -99,31 +76,22 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
       setAuthState(prev => ({ ...prev, loading: true, error: null }));
       await authHook.signUp(email, password);
 
-      // After successful sign up, get the token and decode user info
       const token = localStorage.getItem('access_token');
       if (token) {
         const decoded = parseJwt(token);
         if (decoded) {
-          const user: User = {
-            id: decoded.sub,
-            email: decoded.email,
-            token: token
-          };
-          setAuthState({
-            user,
-            loading: false,
-            error: null,
-            isAuthenticated: true
-          });
+          const user: User = { id: decoded.sub, email: decoded.email, token };
+          setAuthState({ user, loading: false, error: null, isAuthenticated: true });
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Sign up failed';
       setAuthState(prev => ({
         ...prev,
         loading: false,
-        error: error.message || 'Sign up failed',
+        error: message,
         isAuthenticated: false,
-        user: null
+        user: null,
       }));
       throw error;
     }
@@ -132,41 +100,19 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
   const signOut = async () => {
     try {
       await authHook.signOut();
-      setAuthState({
-        user: null,
-        loading: false,
-        error: null,
-        isAuthenticated: false
-      });
+      setAuthState({ user: null, loading: false, error: null, isAuthenticated: false });
       router.push('/signin');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Sign out error:', error);
-      // Even if sign out fails, clear local state
-      setAuthState({
-        user: null,
-        loading: false,
-        error: null,
-        isAuthenticated: false
-      });
+      setAuthState({ user: null, loading: false, error: null, isAuthenticated: false });
       router.push('/signin');
     }
   };
 
-  const refreshAuth = async () => {
-    // In a real implementation, you might want to validate the token
-    // This function is maintained for compatibility
-  };
+  const refreshAuth = async () => {};
 
   return (
-    <AuthContext.Provider
-      value={{
-        ...authState,
-        signIn,
-        signUp,
-        signOut,
-        refreshAuth,
-      }}
-    >
+    <AuthContext.Provider value={{ ...authState, signIn, signUp, signOut, refreshAuth }}>
       {children}
     </AuthContext.Provider>
   );
@@ -174,8 +120,6 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
 
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthContextProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthContextProvider');
   return context;
 }

@@ -2,7 +2,7 @@
 
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useTasks } from '@/lib/hooks/useTasks';
 import { TaskList } from '@/components/tasks/TaskList';
@@ -20,17 +20,18 @@ export default function TasksPage() {
     goToPage,
   } = useTasks();
 
-  const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
+  // deletingTaskId removed to fix ESLint warning
 
   const handleDelete = async (taskId: string) => {
     if (confirm('Are you sure you want to delete this task?')) {
       try {
-        setDeletingTaskId(taskId);
         await handleDeleteTask(taskId);
-      } catch (error) {
-        console.error('Failed to delete task:', error);
-      } finally {
-        setDeletingTaskId(null);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error('Failed to delete task:', err.message);
+        } else {
+          console.error('Failed to delete task');
+        }
       }
     }
   };
@@ -47,7 +48,6 @@ export default function TasksPage() {
           variant="primary"
           size="md"
           onClick={() => router.push('/tasks/create')}
-          // className="text-gray-900"
           style={{ color: '#111827' }}
         >
           ➕ Create Task

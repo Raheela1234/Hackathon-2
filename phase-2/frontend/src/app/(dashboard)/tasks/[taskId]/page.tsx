@@ -34,8 +34,12 @@ export default function TaskDetailPage() {
         setLoading(true);
         const taskData = await getTask(user.id, taskId);
         setTask(taskData);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load task');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('Failed to load task');
+        }
       } finally {
         setLoading(false);
       }
@@ -51,10 +55,14 @@ export default function TaskDetailPage() {
     try {
       await updateTask(taskId, data);
       router.push('/tasks');
-    } catch (error) {
-      console.error('Failed to update task:', error);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('Failed to update task:', err.message);
+      } else {
+        console.error('Failed to update task');
+      }
       setIsSubmitting(false);
-      throw error;
+      throw err;
     }
   };
 
@@ -65,9 +73,13 @@ export default function TaskDetailPage() {
     try {
       await deleteTask(taskId);
       router.push('/tasks');
-    } catch (error: any) {
-      console.error('Failed to delete task:', error);
-      setError(error.message || 'Failed to delete task');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.error('Failed to delete task:', err.message);
+        setError(err.message);
+      } else {
+        setError('Failed to delete task');
+      }
       setIsDeleting(false);
       setShowDeleteModal(false);
     }
@@ -107,7 +119,7 @@ export default function TaskDetailPage() {
     );
   }
 
-    return (
+  return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -120,7 +132,6 @@ export default function TaskDetailPage() {
           variant="danger"
           size="sm"
           onClick={() => setShowDeleteModal(true)}
-          
         >
           Delete Task
         </Button>
@@ -136,7 +147,6 @@ export default function TaskDetailPage() {
         />
       </div>
 
-      {/* Delete confirmation modal */}
       <Modal
         isOpen={showDeleteModal}
         title="Delete Task?"

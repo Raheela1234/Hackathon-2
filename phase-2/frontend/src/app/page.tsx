@@ -1,13 +1,15 @@
 // T105: Landing page with branding and auth CTAs
-"use client"
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
-import { useState, useEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
+  // useLayoutEffect ensures synchronous DOM update before paint, safe for setState
+  useLayoutEffect(() => {
     setMounted(true);
   }, []);
 
@@ -375,14 +377,8 @@ export default function LandingPage() {
           animation-delay: 4s;
         }
         @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         .animate-slide-up {
           animation: slideUp 0.6s ease-out forwards;
@@ -391,19 +387,11 @@ export default function LandingPage() {
           animation: fadeIn 0.6s ease-out forwards;
         }
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
-        .animation-delay-200 {
-          animation-delay: 0.2s;
-        }
-        .animation-delay-400 {
-          animation-delay: 0.4s;
-        }
+        .animation-delay-200 { animation-delay: 0.2s; }
+        .animation-delay-400 { animation-delay: 0.4s; }
         .bg-grid-pattern {
           background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
