@@ -36,7 +36,7 @@ export function TaskCard({ task, onToggleComplete, onEdit, onDelete }: TaskCardP
               {task.title}
             </h3>
             {task.is_completed && (
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#A78BFA]/10 text-[#A78BFA] border border-[#A78BFA]/30">
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#A78BFA]/10 text-white border border-[#A78BFA]/30">
                 ✓ Done
               </span>
             )}
@@ -57,7 +57,7 @@ export function TaskCard({ task, onToggleComplete, onEdit, onDelete }: TaskCardP
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-[#A78BFA] hover:bg-[#A78BFA]/10"
+              className="text-white hover:bg-[#A78BFA]/10"
               onClick={onEdit}
             >
               ✏️ Edit

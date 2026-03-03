@@ -141,6 +141,7 @@ export function TaskForm({
           type="submit"
           variant="primary"
           size="md"
+          className="text-white"
           isLoading={formState.isSubmitting}
           disabled={formState.isSubmitting}
         >
@@ -150,6 +151,7 @@ export function TaskForm({
           type="button"
           variant="ghost"
           size="md"
+          className="text-white"
           onClick={onCancel}
           disabled={formState.isSubmitting}
         >

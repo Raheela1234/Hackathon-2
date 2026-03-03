@@ -29,21 +29,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <div className="flex items-center gap-1">
                   <Link
                     href="/tasks"
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      pathname === '/tasks'
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${pathname === '/tasks'
                         ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
                         : 'text-gray-300 hover:bg-white/10 hover:text-white'
-                    }`}
+                      }`}
                   >
                     📋 Tasks
                   </Link>
                   <Link
                     href="/chat"
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      pathname === '/chat'
+                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${pathname === '/chat'
                         ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
                         : 'text-gray-300 hover:bg-white/10 hover:text-white'
-                    }`}
+                      }`}
                   >
                     💬 Chat Assistant
                   </Link>
@@ -53,8 +51,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="flex items-center gap-4">
                 {user && (
                   <>
-                    <span className="text-sm text-gray-300">{user.email}</span>
-                    <Button variant="ghost" size="sm" onClick={signOut}>
+                    <span className="text-sm text-white">{user.email}</span>
+                    <Button variant="ghost" size="sm" className="text-white"
+                      onClick={signOut}>
                       Sign Out
                     </Button>
                   </>

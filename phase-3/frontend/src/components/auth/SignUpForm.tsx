@@ -184,7 +184,7 @@ export function SignUpForm({ onSuccess }: SignUpFormProps) {
         type="submit"
         variant="primary"
         size="md"
-        className="w-full"
+        className="w-full text-white"
         isLoading={formState.isSubmitting}
       >
         Sign Up
