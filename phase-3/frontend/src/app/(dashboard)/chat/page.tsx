@@ -1,8 +1,6 @@
 // T026: Chat page - AI Assistant chat interface
 
 'use client';
-
-import React from 'react';
 import { ChatInterface } from '@/components/chat/ChatInterface';
 
 /**
@@ -20,7 +18,7 @@ export default function ChatPage() {
         <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-400 to-accent-purple bg-clip-text text-transparent mb-2">
           Chat with AI Assistant
         </h1>
-        <p className="text-gray-400">
+        <p className="text-white/90 text-sm">
           Ask me to create, list, update, or delete your tasks using natural language
         </p>
       </div>

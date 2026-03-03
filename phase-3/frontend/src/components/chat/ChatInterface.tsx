@@ -2,7 +2,6 @@
 
 'use client';
 
-import React from 'react';
 import { useChat } from '@/hooks/useChat';
 import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
@@ -70,7 +69,7 @@ export function ChatInterface() {
               style={{ animationDelay: '300ms' }}
             />
           </div>
-          <span className="text-sm">AI is thinking...</span>
+          <span className="text-sm text-white">AI is thinking...</span>
         </div>
       )}
 

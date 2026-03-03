@@ -60,7 +60,7 @@ export function MessageInput({ onSendMessage, disabled }: MessageInputProps) {
             rows={3}
             className={`
               w-full px-4 py-3 bg-background-dark border rounded-xl resize-none
-              text-gray-100 placeholder-gray-500
+              text-gray-100 placeholder-white
               focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
               transition-all duration-200
               disabled:bg-background-hover disabled:cursor-not-allowed disabled:opacity-50
@@ -93,12 +93,12 @@ export function MessageInput({ onSendMessage, disabled }: MessageInputProps) {
               d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
             />
           </svg>
-          <span className="ml-2 hidden sm:inline">Send</span>
+          <span className="ml-2 hidden sm:inline text-white">Send</span>
         </Button>
       </div>
 
       {/* Helper text */}
-      <p className="mt-2 text-xs text-gray-500">
+      <p className="mt-2 text-xs text-white">
         Press <kbd className="px-1.5 py-0.5 bg-background-hover rounded text-gray-400 border border-gray-700">Enter</kbd> to send,{' '}
         <kbd className="px-1.5 py-0.5 bg-background-hover rounded text-gray-400 border border-gray-700">Shift</kbd> +{' '}
         <kbd className="px-1.5 py-0.5 bg-background-hover rounded text-gray-400 border border-gray-700">Enter</kbd> for new line
