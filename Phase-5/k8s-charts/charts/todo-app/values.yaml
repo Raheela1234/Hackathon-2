@@ -21,7 +21,7 @@ backend:
     BCRYPT_ROUNDS: "12"
     DEBUG: "false"
     LOG_LEVEL: "info"
-    OPENAI_API_KEY: "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"
+    OPENAI_API_KEY: "your-openai-api-key" # Optional, only needed if using AI features
 
 frontend:
   replicaCount: 1
