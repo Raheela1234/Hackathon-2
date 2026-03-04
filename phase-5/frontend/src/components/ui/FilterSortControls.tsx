@@ -4,7 +4,6 @@
 
 import React, { useState } from 'react';
 import { TaskPriority, FilterState, SortOption } from '@/types/tasks';
-import { Button } from './Button';
 
 interface FilterSortControlsProps {
   filters: FilterState;

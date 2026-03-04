@@ -2,15 +2,13 @@
 
 'use client';
 
-import React, { useState } from 'react';
+
 import {
   formatDateForDisplay,
   formatDateWithRelative,
   getDueDateStatusClass,
   getDueDateLabel,
   getTodayISO,
-  isOverdue,
-  isToday,
 } from '@/lib/utils/dates';
 
 interface DueDatePickerProps {

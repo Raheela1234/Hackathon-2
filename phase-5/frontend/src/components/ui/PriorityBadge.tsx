@@ -2,7 +2,6 @@
 
 'use client';
 
-import React from 'react';
 import { TaskPriority } from '@/types/tasks';
 
 interface PriorityBadgeProps {
