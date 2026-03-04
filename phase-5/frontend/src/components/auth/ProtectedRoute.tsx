@@ -15,12 +15,15 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      // Redirect to sign-in if not authenticated
-      router.push('/signin');
+      if (typeof window !== 'undefined') {
+        const onLandingPage = window.location.pathname === '/';
+        if (!onLandingPage) {
+          router.push('/'); // ✅ redirect to landing page instead of /signin
+        }
+      }
     }
   }, [isAuthenticated, loading, router]);
 
-  // Show loader while checking authentication status
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -29,11 +32,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     );
   }
 
-  // If authenticated, show the protected content
-  if (isAuthenticated) {
-    return <>{children}</>;
-  }
+  if (isAuthenticated) return <>{children}</>;
 
-  // If not authenticated, return nothing (redirect effect will happen via useEffect)
-  return null;
+  return null; // redirect handled by useEffect
 }

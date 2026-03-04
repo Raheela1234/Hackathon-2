@@ -1,8 +1,8 @@
-// T061: Task detail page with edit mode and delete confirmation
+// T061: Task detail page with edit mode supporting advanced features
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { getTask } from '@/lib/api/tasks';
@@ -17,7 +17,7 @@ export default function TaskDetailPage() {
   const params = useParams();
   const taskId = params.taskId as string;
   const { user } = useAuth();
-  const { updateTask, deleteTask } = useTasks();
+  const { updateTask, deleteTask, tasks } = useTasks();
 
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
@@ -25,6 +25,15 @@ export default function TaskDetailPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Get unique tags from existing tasks
+  const availableTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    tasks.forEach(t => {
+      (t.tags || []).forEach(tag => tagSet.add(tag));
+    });
+    return Array.from(tagSet).sort();
+  }, [tasks]);
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -81,7 +90,7 @@ export default function TaskDetailPage() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="flex flex-col items-center gap-3">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-500" />
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#A78BFA]" />
           <p className="text-gray-400 text-sm">Loading task...</p>
         </div>
       </div>
@@ -91,7 +100,7 @@ export default function TaskDetailPage() {
   if (error || !task) {
     return (
       <div className="max-w-2xl mx-auto">
-        <div className="bg-danger-500/10 text-danger-400 border border-danger-500/20 p-6 rounded-2xl">
+        <div className="bg-red-500/10 text-red-400 border border-red-500/20 p-6 rounded-2xl">
           <p className="font-semibold text-lg">Error loading task</p>
           <p className="text-sm mt-2">{error || 'Task not found'}</p>
           <Button
@@ -113,7 +122,7 @@ export default function TaskDetailPage() {
         <div>
           <h2 className="text-3xl font-bold text-gray-100">Edit Task</h2>
           <p className="mt-2 text-sm text-gray-400">
-            Update the task details or delete it.
+            Update all task details including priority, due date, tags, and recurrence settings.
           </p>
         </div>
         <Button
@@ -125,13 +134,14 @@ export default function TaskDetailPage() {
         </Button>
       </div>
 
-      <div className="bg-background-card border border-gray-800 shadow-card rounded-2xl p-6">
+      <div className="bg-[#0F1020] border border-[#A78BFA]/30 shadow-lg rounded-2xl p-6">
         <TaskForm
           mode="edit"
           initialData={task}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           isSubmitting={isSubmitting}
+          availableTags={availableTags}
         />
       </div>
 
@@ -165,7 +175,7 @@ export default function TaskDetailPage() {
         <p className="text-sm text-gray-300">
           Are you sure you want to delete this task? This action cannot be undone.
         </p>
-        <div className="mt-3 bg-background-hover p-4 rounded-xl border border-gray-800">
+        <div className="mt-3 bg-[#1A1B2E] p-4 rounded-xl border border-[#A78BFA]/30">
           <p className="font-medium text-gray-100">{task.title}</p>
           {task.description && (
             <p className="text-sm text-gray-400 mt-1">{task.description}</p>

@@ -4,9 +4,12 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { useState, useLayoutEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false);
+  const searchParams = useSearchParams();
+  const justSignedOut = searchParams?.get('justSignedOut') === 'true';
 
   // useLayoutEffect ensures synchronous DOM update before paint, safe for setState
   useLayoutEffect(() => {
@@ -29,6 +32,20 @@ export default function LandingPage() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
+        {justSignedOut && (
+          <div className="bg-green-500/10 text-green-400 border border-green-500/20 p-4 rounded-lg mb-4">
+            <p>You have successfully signed out.</p>
+            <Link href="/">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="mt-2"
+              >
+                Back to Home
+              </Button>
+            </Link>
+          </div>
+        )}
         <header className="py-6 flex items-center justify-between backdrop-blur-sm bg-white/5 rounded-2xl px-6 mt-4 border border-white/10">
           <Link href="/" className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-gradient-to-r from-purple-400 to-blue-400 rounded-xl flex items-center justify-center shadow-lg">

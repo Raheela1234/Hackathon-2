@@ -1,104 +1,57 @@
-import { useRouter } from 'next/navigation';
+// hooks/useBetterAuth.ts
 import { useCallback } from 'react';
 import apiClient from '@/lib/api/client';
 
-// Pure JWT-based auth hook without BetterAuth dependencies
-// This hook handles the API calls but not the navigation - that's handled by AuthContext
-interface User {
-  id: string;
-  email: string;
-  token?: string;
+// Define the return type for signIn/signUp
+interface AuthResponse {
+  access_token: string;
 }
 
-interface AuthState {
-  user: User | null;
-  loading: boolean;
-  error: string | null;
-  isAuthenticated: boolean;
-}
-
-interface AuthContextType extends AuthState {
-  signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
-  signOut: () => Promise<void>;
-  refreshAuth: () => void;
-}
-
-export function useBetterAuth(): AuthContextType {
-  const router = useRouter();
-
-  // Direct API calls to match our backend endpoints
-  // Navigation is handled by the AuthContext after successful auth
-  const signInHandler = useCallback(async (email: string, password: string) => {
+export function useBetterAuth() {
+  // Sign In
+  const signIn = useCallback(async (email: string, password: string): Promise<AuthResponse> => {
     try {
-      const response = await apiClient.post('/auth/auth/signin', {
-        email,
-        password
-      });
+      const response = await apiClient.post('/auth/auth/signin', { email, password });
 
-      if (response.data.access_token) {
-        // Store the token in localStorage for use with API calls
-        localStorage.setItem('access_token', response.data.access_token);
-        // Don't navigate here - let AuthContext handle it
-        return response.data;
-      } else {
+      if (!response.data.access_token) {
         throw new Error('Sign in failed - no token received');
       }
+
+      // ✅ Return token for AuthContext to handle state
+      return { access_token: response.data.access_token };
     } catch (error: any) {
       const errorMessage = error.response?.data?.error?.message || error.message || 'Sign in failed';
       throw new Error(errorMessage);
     }
   }, []);
 
-  const signUpHandler = useCallback(async (email: string, password: string) => {
+  // Sign Up
+  const signUp = useCallback(async (email: string, password: string): Promise<AuthResponse> => {
     try {
-      const response = await apiClient.post('/auth/auth/signup', {
-        email,
-        password
-      });
+      const response = await apiClient.post('/auth/auth/signup', { email, password });
 
-      if (response.data.access_token) {
-        // Store the token in localStorage for use with API calls
-        localStorage.setItem('access_token', response.data.access_token);
-        // Don't navigate here - let AuthContext handle it
-        return response.data;
-      } else {
+      if (!response.data.access_token) {
         throw new Error('Sign up failed - no token received');
       }
+
+      return { access_token: response.data.access_token };
     } catch (error: any) {
       const errorMessage = error.response?.data?.error?.message || error.message || 'Sign up failed';
       throw new Error(errorMessage);
     }
   }, []);
 
-  const signOutHandler = useCallback(async () => {
-    try {
-      // Clear the stored token
-      localStorage.removeItem('access_token');
-      // Also clear any other auth-related storage
-      localStorage.removeItem('refresh_token');
-      // Don't navigate here - let AuthContext handle it
-    } catch (error) {
-      // Even if sign out fails, clear local storage
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-    }
+  // Sign Out
+  const signOut = useCallback(async () => {
+    // Clear tokens from localStorage
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
   }, []);
 
+  // Optional refreshAuth (JWT-only)
   const refreshAuth = useCallback(() => {
-    // Session refreshing would happen automatically with JWT
-    // In a real implementation, you might want to refresh the token here
+    // Could implement refresh token logic if needed
   }, []);
 
-  // Return initial state - the actual state will be managed by AuthContext
-  return {
-    user: null,
-    loading: false,
-    error: null,
-    isAuthenticated: false,
-    signIn: signInHandler,
-    signUp: signUpHandler,
-    signOut: signOutHandler,
-    refreshAuth,
-  };
+  return { signIn, signUp, signOut, refreshAuth };
 }

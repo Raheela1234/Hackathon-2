@@ -1,29 +1,18 @@
-// T028: Sign in page with SignInForm and navigation links
+// T028: Sign in page without back-to-home button
+import { Suspense } from 'react';
 
-import Link from 'next/link';
-import { SignInForm } from '@/components/auth/SignInForm';
+import SignInPageContent from './signin-content';
 
 export default function SignInPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold text-white/90">Sign In</h2>
-        <p className="mt-2 text-sm text-white">
-          Welcome back! Sign in to manage your tasks.
-        </p>
-      </div>
-
-      <SignInForm />
-
-      <div className="text-center text-sm">
-        <span className="text-white/90">{`Don't have an account?`} </span>
-        <Link
-          href="/signup"
-          className="font-medium text-primary-400 hover:text-primary-300 transition-colors"
-        >
-          Sign up
-        </Link>
-      </div>
-    </div>
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-400"></div>
+        </div>
+      }
+    >
+      <SignInPageContent />
+    </Suspense>
   );
 }

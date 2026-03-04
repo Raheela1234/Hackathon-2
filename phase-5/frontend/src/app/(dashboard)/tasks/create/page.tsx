@@ -1,8 +1,8 @@
-// T052: Create task page with TaskForm
+// T052: Create task page with TaskForm supporting advanced features
 
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTasks } from '@/lib/hooks/useTasks';
 import { TaskForm } from '@/components/tasks/TaskForm';
@@ -10,8 +10,17 @@ import { TaskCreateRequest } from '@/types/tasks';
 
 export default function CreateTaskPage() {
   const router = useRouter();
-  const { createTask } = useTasks();
+  const { createTask, tasks } = useTasks();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Get unique tags from existing tasks
+  const availableTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    tasks.forEach(task => {
+      (task.tags || []).forEach(tag => tagSet.add(tag));
+    });
+    return Array.from(tagSet).sort();
+  }, [tasks]);
 
   const handleSubmit = async (data: TaskCreateRequest) => {
     setIsSubmitting(true);
@@ -34,16 +43,17 @@ export default function CreateTaskPage() {
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-gray-100">Create New Task</h2>
         <p className="mt-2 text-sm text-gray-400">
-          Add a new task to your list. Fill in the title and optionally add a description.
+          Create a new task with all advanced features. Set priority, due date, tags, and configure recurring tasks.
         </p>
       </div>
 
-      <div className="bg-background-card border border-gray-800 shadow-card rounded-2xl p-8">
+      <div className="bg-[#0F1020] border border-[#A78BFA]/30 shadow-lg rounded-2xl p-8">
         <TaskForm
           mode="create"
           onSubmit={handleSubmit}
           onCancel={handleCancel}
           isSubmitting={isSubmitting}
+          availableTags={availableTags}
         />
       </div>
     </div>
